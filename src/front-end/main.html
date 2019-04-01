@@ -8,17 +8,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script>
+
+        //INSERT INFO TO THE FAKE DATABASE
+        var author = 'andy';
+        var content = 'hope is a good thing';
+        var query = `mutation CreateMessage($input: MessageInput) {
+        createMessage(input: $input) {
+            id
+        }
+        }`;
+
         fetch('http://localhost:4000/graphql', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
-            body: JSON.stringify({ query: "{ hello }" })
+            body: JSON.stringify({
+                query,
+                variables: {
+                    input: {
+                        author,
+                        content,
+                    }
+                }
+            })
         })
             .then(r => r.json())
             .then(data => {
-                alert('data returned:', data.data.hello);
+                debugger;
+                console.log('data returned:', data);
+            });
+
+
+        //GET INFO FROM THE FAKE DATABASE
+        fetch('http://localhost:4000/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({ query: '{ getMessage(id: "ea63129c03cb240aab1a") { id, author, content} }' })
+        })
+            .then(r => r.json())
+            .then(data => {
+                debugger;
+                console.log("Datos recibidos: " + data.data.hello);
             });
     </script>
 </head>
